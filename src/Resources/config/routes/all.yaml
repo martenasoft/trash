@@ -1,2 +1,3 @@
-martena_soft_trash:
-  resource: '@MartenaSoftTrashBundle/Resources/config/routes/trash.yaml'
+trash_admin:
+  resource: '@MartenaSoftTrashBundle/Resources/config/routes/admin.yaml'
+  prefix: /admin

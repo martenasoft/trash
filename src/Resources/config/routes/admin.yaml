@@ -1,0 +1,16 @@
+
+admin_trash_index:
+  path: /
+  controller: 'MartenaSoft\Trash\Controller\TrashAdminController::index'
+
+#admin_trash_create:
+#  path: /create
+#  controller: 'MartenaSoft\Trash\Controller\TrashAdminController::save'
+
+#admin_trash_edit:
+#  path: /edit/{id}
+#  controller: 'MartenaSoft\Trash\Controller\TrashAdminController::save'
+
+admin_trash_rollback:
+  path: /rollback/{id}
+  controller: 'MartenaSoft\Trash\Controller\TrashAdminController::rollback'
