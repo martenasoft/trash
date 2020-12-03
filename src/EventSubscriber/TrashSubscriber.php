@@ -1,16 +1,16 @@
 <?php
 
-
 namespace MartenaSoft\Trash\EventSubscriber;
 
-use Doctrine\ORM\EntityManagerInterface;
 use MartenaSoft\Common\Event\CommonEventResponseInterface;
-use MartenaSoft\Common\Event\CommonFormBeforeDeleteEvent;
 use MartenaSoft\Common\Event\CommonFormEventEntityInterface;
+use MartenaSoft\Crud\Event\CrudAfterFindEvent;
+use MartenaSoft\Crud\Event\CrudBeforeDeleteEvent;
 use MartenaSoft\Trash\Entity\TrashEntityInterface;
 use MartenaSoft\Trash\Service\MoveToTrashService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TrashSubscriber implements EventSubscriberInterface
 {
@@ -24,11 +24,20 @@ class TrashSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CommonFormBeforeDeleteEvent::getEventName() => 'onCommonFormBeforeDelete',
+            CrudBeforeDeleteEvent::getEventName() => 'onCrudBeforeDelete',
+            CrudAfterFindEvent::getEventName() => 'onClearEntityIsDeleted'
         ];
     }
 
-    public function onCommonFormBeforeDelete(CommonFormEventEntityInterface $event): void
+    public function onClearEntityIsDeleted(CommonFormEventEntityInterface $event): void
+    {
+        $entity = $event->getEntity();
+        if ($entity instanceof TrashEntityInterface && $entity->isDeleted()) {
+            throw new NotFoundHttpException();
+        }
+    }
+
+    public function onCrudBeforeDelete(CommonFormEventEntityInterface $event): void
     {
         $entity = $this->getEntity($event);
         $this->trashService->move($entity);
